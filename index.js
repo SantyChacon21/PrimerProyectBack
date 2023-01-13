@@ -1,31 +1,47 @@
-class ProductManager {
-    constructor() {
-        this.products = []
+class ProductManager{
+    constructor( ) {
+        this.products = [ ]
     }
-
-    getproducts = () => this.products
-    addProduct = (img ,title, descripcion, precio, capacidad) => {
-        const product = {
-            img,
-            title,
-            descripcion,
-            precio,
-            capacidad
+    getProducts = ( ) => this.products
+    getProductById = ( id ) => { 
+        const productDb = this.products.find (product =>product.id === id)
+        if (!productDb) {
+            return `Producto no Encontrado  con el id: ${id}` 
+        }
+    }
+    addProduct =(newProduct) =>{
+        const productDb = this.products.find (product =>product.code === newProduct.code)
+        if (productDb){
+        return  `Producto Encontrado` 
         }
 
         if (this.products.length === 0) {
-            product.id = 1
+            newProduct.id = 1
+            this.products.push(newProduct)
         } else {
-            
-            product.id = this.products[this.products.length - 1].id + 1
-            
+            this.products = [...this.products, {...newProduct, id: this.products[this.products.length-1].id+1 }]
         }
-        this.products.push(product) 
-        console.log(this.products)
-    } 
-     
+    }
 }
 
-const productManager = new ProductManager()
-productManager.addProduct('...', 'Azucar "Dulce"', 'Azucar dulce blanca','$350',200)
+const productos = new ProductManager( )
+console.log(productos.addProduct({
+    title: 'Azucar',
+    description:'Azucar Blanca',
+    price: 110,
+    img: '...',
+    code:1,
+    stock:200
+}))
 
+console.log(productos.addProduct({
+    title: 'Leche',
+    description:'Leche blanca "La Serenisima"',
+    price: 150,
+    img: '...',
+    code:2,
+    stock:100
+}))
+
+console.log(productos.getProducts())
+console.log(productos.getProductById(3))
