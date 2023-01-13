@@ -27,5 +27,5 @@ class ProductManager {
 }
 
 const productManager = new ProductManager()
-productManager.addProduct('...', 'KissxSis', 'KissxSis es un manga de Romance','$3500',200)
+productManager.addProduct('...', 'Azucar "Dulce"', 'Azucar dulce blanca','$350',200)
 
