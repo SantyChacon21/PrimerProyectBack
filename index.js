@@ -1,6 +1,10 @@
+const fs = require('fs')
+
+
 class ProductManager{
-    constructor( ) {
-        this.products = [ ]
+    constructor(path) {
+        this.products = []
+        this.path = path
     }
     getProducts = ( ) => this.products
     getProductById = ( id ) => { 
@@ -9,39 +13,72 @@ class ProductManager{
             return `Producto no Encontrado  con el id: ${id}` 
         }
     }
-    addProduct =(newProduct) =>{
-        const productDb = this.products.find (product =>product.code === newProduct.code)
-        if (productDb){
-        return  `Producto Encontrado` 
+    addProduct = async (newItem) => {
+        if (newItem.title === '' || newItem.description === '' || newItem.price === '' || newItem.thumbnail === '' || newItem.code === '' || newItem.stock === '')  {
+        return console.log(`Debe completar todos los campos`)
         }
-
-        if (this.products.length === 0) {
-            newProduct.id = 1
-            this.products.push(newProduct)
+        let productDb = await this.getProducts()
+        const data = await productDb.find(product => product.code === newItem.code)
+        try {
+        if (data) {
+            return console.log(`El código de producto ya existe`)
+        }
+        if (productDb.length === 0) {
+            newItem.id = 1
+            productDb.push(newItem)
         } else {
-            this.products = [...this.products, {...newProduct, id: this.products[this.products.length-1].id+1 }]
+            productDb = [ ...productDb, { ...newItem, id:productDb[productDb.length -1].id + 1}]
+        }
+        fs.promises.writeFile(this.path, JSON.stringify(productDb, null,'\t'))
+        console.log('Producto cargado en la base de datos');
+        } catch (error) {
+        console.log(error);
         }
     }
-}
+    getProducts = async () => {
+        try {
+        if (fs.existsSync(this.path)) {
+            const data = await fs.promises.readFile(this.path, 'utf-8')
+            const productDb = JSON.parse(data);
+            return productDb;
+        }
+        await fs.promises.writeFile(this.path, '[]', 'utf-8')
+        return []
+        } catch (error) {
+        console.log(error);
+        }
+    }
+    getProductById = async (id) => {
+        const data = await fs.promises.readFile(this.path, 'utf-8')
+        const productDb = JSON.parse(data).find(product => product.id === id)
+        if (!productDb) {
+        return console.log(`No existe producto con el id: ${id}`)
+        }
+        return console.log(productDb)
+    }
+    updateProduct = async (id, campoActualizar) => {
+        const data = await fs.promises.readFile(this.path, 'utf-8')
+        const productDb = await JSON.parse(data)
+        const index = await productDb.findIndex(product => product.id === id)
+        if (index === -1) {
+        return console.log(`No existe producto con el id: ${id}`)
+        }
+        productDb[index] = { ...campoActualizar, id: productDb[index].id }
+        fs.promises.writeFile(this.path, JSON.stringify(productDb, null,'\t'))
+        console.log('Producto actualizado en la base de datos');
+    }
+    deleteProduct = async (id) => {
+        const data = await fs.promises.readFile(this.path, 'utf-8')
+        const productDb = await JSON.parse(data)
+        const index = await productDb.findIndex(product => product.id === id)
+        if (index === -1) {
+        return console.log(`No existe producto con el id: ${id}`)
+        }
+        productDb.splice(index, 1)
+        fs.promises.writeFile(this.path, JSON.stringify(productDb, null,'\t'))
+        console.log('Producto eliminado de la base de datos');
+    }
+    }
 
-const productos = new ProductManager( )
-console.log(productos.addProduct({
-    title: 'Azucar',
-    description:'Azucar Blanca',
-    price: 110,
-    img: '...',
-    code:1,
-    stock:200
-}))
 
-console.log(productos.addProduct({
-    title: 'Leche',
-    description:'Leche blanca "La Serenisima"',
-    price: 150,
-    img: '...',
-    code:2,
-    stock:100
-}))
-
-console.log(productos.getProducts())
-console.log(productos.getProductById(3))
+    const productos = new ProductManager('./files/productos.json')
