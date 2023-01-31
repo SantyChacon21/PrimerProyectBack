@@ -1,5 +1,8 @@
  import express from 'express'
 
+ import fs from 'fs'
+
+
 const app = express()
 const PORT = 8080
 
@@ -17,12 +20,12 @@ const products =[
     {nombre: 'producto9', id:'9', description: 'este es un producto 9'}
 ]
 /* Traemos todos los productos */
-app.get('/products',(req, res)=>{
+/* app.get('/products',(req, res)=>{
     console.log(req.query)
     const {limit} = req.query
     const listado =  products.slice(0, limit)
     res.send(listado)
-})
+}) */
 
 /* Filtramos por id */
 app.get('/products/:id',(req, res)=>{
@@ -33,6 +36,25 @@ app.get('/products/:id',(req, res)=>{
     }
     res.send(product)
 })
+
+const leerArchivo = async ()=>{
+    try {
+       let data = await fs.promises.readFile('./products.json','utf-8' )
+       let dataJs = JSON.parse(data)
+       app.get('/products',(req, res)=>{
+        const {limit} = req.query
+        console.log(req.query)
+        const dataLimit = dataJs.slice(0, limit)
+        res.send(dataLimit)
+    })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+leerArchivo()
+
+
 
 /* app.get('/products', (req, res)=>{
     console.log(req.products)
