@@ -1,24 +1,22 @@
 [
 	{
-		"title": "Producto 1 (Updated)",
+		"title": "Producto 1",
 		"description": "Descripción producto",
 		"price": 100,
 		"thumbnail": "link",
 		"code": "a13sh",
 		"stock": 11,
 		"category": "electronic",
-		"status": true,
 		"id": 1
 	},
 	{
-		"title": "Producto 2 (Updated)",
+		"title": "Producto 2",
 		"description": "Descripción producto",
 		"price": 100,
 		"thumbnail": "link",
 		"code": "a23sh",
 		"stock": 11,
 		"category": "electronic",
-		"status": true,
 		"id": 2
 	},
 	{
@@ -64,16 +62,5 @@
 		"category": "electronic",
 		"status": true,
 		"id": 6
-	},
-	{
-		"title": "Producto 7",
-		"description": "Descripción producto 7",
-		"code": "a73sh",
-		"price": "150",
-		"stock": "11",
-		"category": "electronic",
-		"thumbnail": "link",
-		"status": true,
-		"id": 7
 	}
 ]

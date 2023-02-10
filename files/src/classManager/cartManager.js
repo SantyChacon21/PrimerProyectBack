@@ -1,10 +1,11 @@
 import fs from 'fs'
 
+/* ------------------------------------------ DECLARO LA CLASE ------------------------------------------ */
 export class CartManager{
-  #ruta = './files/src/carrito.json'
-  constructor(){
+  
+  constructor(path){
     this.products = []
-    this.path = this.#ruta
+    this.path = path;
   }
   
   getCartProducts = async (cid) => {
@@ -18,7 +19,7 @@ export class CartManager{
       await fs.promises.writeFile(this.path, '[]', 'utf-8')
       return ['Su carrito se encuentra vacío']
     } catch (error) {
-      console.log(error);
+      return  error;
     }
   }
 
@@ -65,8 +66,7 @@ export class CartManager{
 
       await fs.promises.writeFile(this.path, JSON.stringify(cartDb, null, '\t'), 'utf-8')
     } catch (error) {
-      console.log(error);
+      return  error;
     }
   }
-
 }

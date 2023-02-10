@@ -1,10 +1,11 @@
 import fs from 'fs'
 
+/* ------------------------------------------ DECLARO LA CLASE ------------------------------------------ */
 export class ProductManager{
-  #ruta = './productos.json'
-  constructor(){
+  
+  constructor(path){
     this.products = []
-    this.path = this.#ruta
+    this.path = path;
   }
   
   addProduct = async (newItem) => {
@@ -19,7 +20,7 @@ export class ProductManager{
       await fs.promises.writeFile(this.path, JSON.stringify(productDb, null,'\t'))
       console.log('Producto cargado en la base de datos');
     } catch (error) {
-      console.log(error);
+      return  error;
     }
   }
   getProducts = async () => {
@@ -32,7 +33,7 @@ export class ProductManager{
       await fs.promises.writeFile(this.path, '[]', 'utf-8')
       return []
     } catch (error) {
-      console.log(error);
+      return  error;
     }
   }
   getProductById = async (id) => {
@@ -43,14 +44,14 @@ export class ProductManager{
     }
     return console.log(productDb)
   }
-  updateProduct = async (id, objetoActualizar) => {
+  updateProduct = async (id, campoActualizar) => {
     const data = await fs.promises.readFile(this.path, 'utf-8')
     const productDb = await JSON.parse(data)
     const index = await productDb.findIndex(product => product.id.toString() === id)
     if (index === -1) {
       return console.log(`No existe producto con el id: ${id}`)
     }
-    productDb[index] = { ...objetoActualizar, id: productDb[index].id }
+    productDb[index] = { ...campoActualizar, id: productDb[index].id }
     await fs.promises.writeFile(this.path, JSON.stringify(productDb, null,'\t'))
     console.log('Producto actualizado en la base de datos');
   }
@@ -66,4 +67,3 @@ export class ProductManager{
     console.log('Producto eliminado de la base de datos');
   }
 }
-
